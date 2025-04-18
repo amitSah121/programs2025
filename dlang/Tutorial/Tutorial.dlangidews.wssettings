@@ -1,0 +1,31 @@
+{
+    "startupProject": "tutorials",
+    "breakpoints": [
+    ],
+    "bookmarks": [
+    ],
+    "files": [
+        {
+            "file": "/mnt/chromeos/removable/card/programs/dlang/Tutorial/dsa/source/list.d",
+            "column": 70,
+            "row": 13
+        },
+        {
+            "file": "/mnt/chromeos/removable/card/programs/dlang/Tutorial/dsa/source/mergesort.d",
+            "column": 32,
+            "row": 21
+        },
+        {
+            "file": "/mnt/chromeos/removable/card/programs/dlang/Tutorial/dsa/dub.json",
+            "column": 14,
+            "row": 33
+        }
+    ],
+    "expandedItems": [
+        "/mnt/chromeos/removable/card/programs/dlang/Tutorial/tutorials/dub.json",
+        "/mnt/chromeos/removable/card/programs/dlang/Tutorial/tutorials/source",
+        "/mnt/chromeos/removable/card/programs/dlang/Tutorial/dsa/source"
+    ],
+    "selectedWorkspaceItem": "/mnt/chromeos/removable/card/programs/dlang/Tutorial/dsa/source/mergesort.d",
+    "buildConfiguration": 1
+}

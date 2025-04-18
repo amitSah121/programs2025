@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/w3-css/4.1.0/w3.min.css">
+</head>
+<body>
+
+    <div class="w3-container w3-padding">
+        <h2>API Manager</h2>
+
+        <!-- API Help Manual -->
+        <button class="w3-button w3-blue" onclick="fetchHelp()">View API Help</button>
+        <pre id="help-output" class="w3-pale-blue w3-padding"></pre>
+
+        <!-- List API Routes -->
+        <button class="w3-button w3-green" onclick="fetchRoutes()">List API Routes</button>
+        <ul id="routes-list" class="w3-ul w3-card-4"></ul>
+
+        <!-- Add API -->
+        <h3>Add API</h3>
+        <label>Method:</label>
+        <select id="api-method" class="w3-select">
+            <option value="GET">GET</option>
+            <option value="POST">POST</option>
+        </select>
+        
+        <label>Route:</label>
+        <input type="text" id="api-route" class="w3-input" placeholder="e.g., _api_greet">
+        
+        <label>Handler Name:</label>
+        <input type="text" id="api-handler" class="w3-input" placeholder="e.g., greet">
+        
+        <label>Function Code:</label>
+        <textarea id="api-code" class="w3-input" placeholder='def greet(name): return f"Hello, {name}!"'></textarea>
+
+        <button class="w3-button w3-teal" onclick="addAPI()">Add API</button>
+
+        <!-- Remove API -->
+        <h3>Remove API</h3>
+        <label>Method:</label>
+        <select id="remove-method" class="w3-select">
+            <option value="GET">GET</option>
+            <option value="POST">POST</option>
+        </select>
+
+        <label>Route:</label>
+        <input type="text" id="remove-route" class="w3-input" placeholder="e.g., _api_greet">
+
+        <button class="w3-button w3-red" onclick="removeAPI()">Remove API</button>
+
+        <!-- Test API -->
+        <h3>Test API Get</h3>
+        <input type="text" id="test-url" class="w3-input" placeholder="Enter API URL (e.g., /api/greet/John)">
+        <button class="w3-button w3-purple" onclick="testAPIGet()">Test API</button>
+        <pre id="test-output" class="w3-pale-yellow w3-padding"></pre>
+		
+		
+        <!-- Test API -->
+        <h3>Test API Post</h3>
+        
+        <label>Route:</label>
+        <input type="text" id="post-api-route" class="w3-input" placeholder="e.g., /api/greet">
+        
+        <label>Post:</label>
+        <textarea id="post-api-code" class="w3-input" placeholder='{msg:"what"}'></textarea>
+
+        <button class="w3-button w3-teal" onclick="testAPIPost()">Test API Post</button>
+        <pre id="test-output-post" class="w3-pale-yellow w3-padding"></pre>
+    
+	
+	</div>
+
+	
+
+    <script>
+        const BASE_URL = "http://192.168.0.192:8080";
+
+        // Fetch API Help Manual
+        function fetchHelp() {
+            fetch(`${BASE_URL}/api/help`)
+                .then(res => res.json())
+				.then(data => document.getElementById("help-output").innerText = data.data)
+                .catch(err => console.error("Error:", err));
+        }
+
+        // Fetch List of Routes
+        function fetchRoutes() {
+            fetch(`${BASE_URL}/api/listroutes`)
+			.then(res => res.json())
+			.then(data => {
+				const list = document.getElementById("routes-list");
+				list.innerHTML = "";
+				// console.log(data);
+				data.data.GET.forEach(route => {
+					let li = document.createElement("li");
+					li.textContent = `GET - ${route}`;
+					list.appendChild(li);
+				});
+				data.data.POST.forEach(route => {
+					let li = document.createElement("li");
+					li.textContent = `POST - ${route}`;
+					list.appendChild(li);
+				});
+			})
+			.catch(err => console.error("Error:", err));
+        }
+
+        // Add API
+        function addAPI() {
+            let method = document.getElementById("api-method").value;
+            let route = document.getElementById("api-route").value;
+            let handler = document.getElementById("api-handler").value;
+            let code = document.getElementById("api-code").value;
+
+            fetch(`${BASE_URL}/api/addapi/method/${method}/route/${route}/handler/${handler}`, {
+				method: "POST",
+				mode: "no-cors",  // Ensure CORS is enabled
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({ code })
+			})
+			.then(response => {
+				// console.log(response.text());
+				return response.json();
+			})
+			.then(data => console.log("Success:", data))
+			.catch(error => console.error("Error:", error));
+        }
+
+        // Remove API
+        function removeAPI() {
+            let method = document.getElementById("remove-method").value;
+            let route = document.getElementById("remove-route").value;
+
+            fetch(`${BASE_URL}/api/removeroute/method/${method}/route/${route}`)
+                .then(res => res.json())
+                .then(data => alert("API Removed: " + JSON.stringify(data)))
+                .catch(err => console.error("Error:", err));
+        }
+
+		function jsonToPreformattedString(jsonData) {
+			return JSON.stringify(jsonData, null, 4)  // Pretty-print with 4 spaces indentation
+				.replace(/</g, "&lt;")   // Escape `<` to prevent HTML injection
+				.replace(/>/g, "&gt;");  // Escape `>` to prevent HTML injection
+		}
+
+        // Test API
+        function testAPIGet() {
+            let url = document.getElementById("test-url").value;
+            fetch(`${BASE_URL}${url}`)
+                .then(res => res.json())
+                .then(data => {
+					document.getElementById("test-output").innerText = jsonToPreformattedString(data);
+					// console.log(data);
+				})
+                .catch(err => console.error("Error:", err));
+        }
+
+		function testAPIPost() {
+            let url = document.getElementById("post-api-route").value;
+            let data = document.getElementById("post-api-code").value;
+			console.log(JSON.parse(data)["score"]);
+
+            fetch(`${BASE_URL}${url}`, {
+				method: "POST",
+				mode: "no-cors",  // Ensure CORS is enabled
+				headers: {
+					"Content-Type": "application/json"
+				},
+        
+				body: JSON.stringify({data: JSON.parse(data)})
+			})
+			.then(response => response.text())
+			.then(data => {
+        fetch(`${BASE_URL}/api/postresponse`)
+                .then(res => res.json())
+                .then(data => {
+                  const jsonPart = data.data.split("\r\n\r\n")[1];
+                  const parsedData = JSON.parse(jsonPart);
+    					document.getElementById("test-output-post").innerText = jsonToPreformattedString(parsedData);
+    					// console.log(data);
+    				})
+                    .catch(err => console.error("Error:", err));
+			})
+			.catch(error => console.error("Error:", error));
+        }
+
+    </script>
+
+</body>
+</html>
+

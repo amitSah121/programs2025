@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+
+<title>W3.JS</title>
+<link rel="stylesheet" href="w3.css">
+<script src="w3.js"></script>
+<script src="data.js"></script>
+<script src="gcode_misc.js"></script>
+<style>
+	pre {
+		tab-size: 2;
+		overflow: auto;  /* Enables scrolling when needed */
+		/* max-height: 400px;  */
+	}
+	#Edit:focus {
+        outline: none;
+    }
+</style>
+<body>
+	<div class="w3-content w3-red" id="whole" style="max-width:960px">
+		<div id="model-delete" class="w3-modal">
+			<div class="w3-modal-content">
+				<div class="w3-container w3-red">
+					<span class="w3-button w3-display-topright" onclick="w3.hide('#model-delete')">&times;</span>
+					<span class="w3-button" id="model-delete-button">Delete</span>
+					<span class="w3-button" onclick="w3.hide('#model-delete')">No</span>
+				</div>
+			</div>
+		</div>
+		<div id="model-create" class="w3-modal">
+			<div class="w3-modal-content">
+				<div class="w3-container w3-red">
+					<span class="w3-button w3-display-topright" onclick="w3.hide('#model-delete')">&times;</span>
+					<label>Method:</label>
+					<select id="api-method" class="w3-select">
+						<option value="GET">GET</option>
+						<option value="POST">POST</option>
+					</select>
+					
+					<label>Route:</label>
+					<input type="text" id="api-route" class="w3-input" placeholder="e.g., _api_greet">
+					
+					<label>Handler Name:</label>
+					<input type="text" id="api-handler" class="w3-input" placeholder="e.g., greet">
+					
+					<label>Function Code:</label>
+					<textarea id="api-code" class="w3-input" placeholder='def greet(name): return f"Hello, {name}!"'></textarea>
+
+					<button class="w3-button w3-teal" onclick="addAPI()">Add API</button>
+				</div>
+			</div>
+		</div>
+		<div class="w3-bar w3-asphalt w3-padding" id="nav">
+			<a w3-repeat="nav" href="#" class="{{class}}" id="{{name}}" onclick="set_selected('#{{name}}')">{{name}}</a>
+		</div>
+		<div id="content" class="w3-pale-yellow">
+			<div id="Home" class="w3-padding">
+				<div id="home-nav" class="w3-asphalt w3-padding">
+					<span id="gcode-edit" class="w3-button w3-white">Gcode</span>
+					<span id="gcode-upload" class="w3-button w3-white"">Upload</span>
+				</div>
+				<div id="Gcode-Editor" class="w3-padding">
+					<div class="w3-button w3-blue" id="convert">Convert</div>
+					<div class="w3-button w3-blue" id="upload-gcode">Upload Gcode</div>
+					<textarea id="Gcode-Editor-text" class="w3-container w3-border-0 w3-white" style="width: 100%; height: 500px; resize: none; outline: none;"></textarea>
+					<div class="w3-blue" id="gcode-per">Per</div>
+				</div>
+				<div id="Gcode-Upload" class="w3-padding">
+					<div class="w3-button w3-blue" id="upload">Upload</div>
+					<textarea id="Gcode-Upload-text" class="w3-container w3-border-0 w3-white" style="width: 100%; height: 500px; resize: none; outline: none;"></textarea>
+					<div class="w3-blue" id="per">Per</div>
+				</div>
+			</div>
+			<div id="Api" class="w3-padding">
+				<div class="w3-bar w3- w3-padding w3-pale-blue" id="api-nav">
+					<a w3-repeat="api-nav" href="#" class="{{class}}" id="{{name}}" onclick="set_api_selected('#{{name}}')">{{name}}</a>
+				</div>
+				<div id="api-content" class="w3-pale-yellow">
+					<div id="Help" class="w3-padding">
+						<pre class="w3-pale-yellow w3-padding">Hello</pre>
+					</div>
+					<div id="Testing" class="w3-padding">			
+						<!-- Test Get API -->
+						<h3>Test API Get</h3>
+						<input type="text" id="test-url" class="w3-input" placeholder="Enter API URL (e.g., /api/greet/John)">
+						<button class="w3-button w3-purple" onclick="testAPIGet()">Test API</button>
+						<pre id="test-output" class="w3-pale-green w3-padding"></pre>
+						
+						
+						<!-- Test Post API -->
+						<h3>Test API Post</h3>
+						<label>Route:</label>
+						<input type="text" id="post-api-route" class="w3-input" placeholder="e.g., /api/greet">
+						<label>Post:</label>
+						<textarea id="post-api-code" class="w3-input" placeholder='{msg:"what"}'></textarea>
+						<button class="w3-button w3-teal" onclick="testAPIPost()">Test API Post</button>
+						<pre id="test-output-post" class="w3-pale-green w3-padding"></pre>
+
+						<!-- List API Routes -->
+						<h3>List Routes</h3>
+						<button class="w3-button w3-green" onclick="fetchRoutes()">List API Routes</button>
+						<ul id="routes-list" class="w3-ul w3-card-4"></ul>
+					
+					</div>
+					<div id="Apis" class="w3-padding">
+						<div class="w3-asphalt w3-padding">
+							<span id="create" class="w3-button w3-white" onclick="w3.show('#model-create')">Create</span>
+							<span id="relode" class="w3-button w3-white" onclick="loadApis()">Reload</span>
+						</div>
+						<div id="list" class="w3-padding-large" ></div>
+					</div>
+					<div id="Editor" class="w3-padding">
+						<div class="w3-button w3-blue" id="upload">Upload</div>
+						<textarea id="Edit" class="w3-container w3-border-0 w3-white" style="width: 100%; height: 800px; resize: none; outline: none;"></textarea>
+					</div>
+				</div>
+			</div>
+			<div id="Documentation" class="w3-padding">
+				<ul class="w3-ul w3-border-0 w3-border-black w3-margin-bottom w3-bottombar">
+					<li><h2 class="w3-bold">Client Side</h2></li>
+					<li class="w3-leftbar w3-border-red w3-border-0"><a href="#">How to Fetch</a></li>
+					<ul class="w3-bar" style="list-style-type: none;">
+						<li class="w3-bar-item w3-border-brown w3-border-0 w3-margin-bottom"><a href="#">Post</a></li>
+						<li class="w3-bar-item w3-border-red w3-border-0 w3-margin-bottom"><a href="#">Get</a></li>
+					</ul>
+					<li class="w3-leftbar w3-border-red w3-border-0"><a href="#">How to Create an Api</a></li>
+					<ul class="w3-bar" style="list-style-type: none;">
+						<li class="w3-bar-item w3-border-brown w3-border-0 w3-margin-bottom"><a href="#">Post</a></li>
+						<li class="w3-bar-item w3-border-red w3-border-0 w3-margin-bottom"><a href="#">Get</a></li>
+					</ul>
+					<li class="w3-leftbar w3-border-red w3-border-0"><a href="#">How to Delete an Api</a></li>
+					<ul class="w3-bar" style="list-style-type: none;">
+						<li class="w3-bar-item w3-border-brown w3-border-0 w3-margin-bottom"><a href="#">Post</a></li>
+						<li class="w3-bar-item w3-border-red w3-border-0 w3-margin-bottom"><a href="#">Get</a></li>
+					</ul>
+					<li><h2 class="w3-bold">Server Side</h2></li>
+					<li class="w3-leftbar w3-border-red w3-border-0"><a href="#">How to Create an Api</a></li>
+					<ul class="w3-bar" style="list-style-type: none;">
+						<li class="w3-bar-item w3-border-brown w3-border-0 w3-margin-bottom"><a href="#">Post</a></li>
+						<li class="w3-bar-item w3-border-red w3-border-0 w3-margin-bottom"><a href="#">Get</a></li>
+					</ul>
+					<li><h2 class="w3-bold"><a href="#">FAQs</a></h2></li>
+				</ul>
+				<div class="w3-padding">
+					<h1 class="w3-blue w3-bold w3-padding"> Client Side </h1>
+					<h3>1. How to Fetch </h3>
+					<div class="w3-panel w3-leftbar w3-border-brown">
+						<h4> Get </h4>
+						<pre class="w3-code notranslate"><code>
+						</code></pre>
+					</div>
+					<div class="w3-panel w3-leftbar w3-border-brown">
+						<h4> POST </h4>
+						<pre class="w3-code notranslate"><code>
+						</code></pre>
+					</div>
+
+					
+					<h3>2. How to Create Api </h3>
+					<div class="w3-panel w3-leftbar w3-border-brown">
+						<h4> Get </h4>
+						<pre class="w3-code notranslate"><code>
+						</code></pre>
+					</div>
+					<div class="w3-panel w3-leftbar w3-border-brown">
+						<h4> POST </h4>
+						<pre class="w3-code notranslate"><code>
+						</code></pre>
+					</div>
+
+
+					<h3>3. How to Delete Api </h3>
+					<div class="w3-panel w3-leftbar w3-border-brown">
+						<h4> Get and POST </h4>
+						<pre class="w3-code notranslate"><code>
+						</code></pre>
+					</div>
+
+					<h1 class="w3-blue w3-bold w3-padding"> Server Side </h1>
+					<h3>1. How to Create Api </h3>
+					<div class="w3-panel w3-leftbar w3-border-brown">
+						<h4> Get </h4>
+						<pre class="w3-code notranslate"><code>
+						</code></pre>
+					</div>
+					<div class="w3-panel w3-leftbar w3-border-brown">
+						<h4> POST </h4>
+						<pre class="w3-code notranslate"><code>
+						</code></pre>
+					</div>
+
+
+					<h1 class="w3-blue w3-bold w3-padding"> FAQs </h1>
+					<div class="w3-panel w3-leftbar w3-border-brown">
+						<h4> FAQs </h4>
+						<pre class="w3-code notranslate"><code>
+						</code></pre>
+					</div>
+					<div class="panel w3-border-brown">
+						
+					<p>1. Unsafe/Reserved Characters (Should be Avoided) </p>
+					<p>These characters have special meanings in URLs and should not be used in API paths: </p>
+
+					<table class="w3-table">
+						<tr>
+							<th>Character</th>
+							<th>Reason</th>	
+						</tr>
+						<tr>
+							<td>?</td>
+							<td>query parameters (e.g., /api/data?id=123)</td>
+						</tr>
+						<tr>
+							<td>&</td>
+							<td>Separates query parameters (e.g., /api/data?x=1&y=2)</td>
+						</tr>
+						<tr>
+							<td>=</td>
+							<td>Used for key-value assignment in query strings</td>
+						</tr>
+						<tr>
+							<td>#</td>
+							<td>Used for URL fragments (ignored in requests)</td>
+						</tr>
+						<tr>
+							<td>%</td>
+							<td>Used for URL encoding (e.g., %20 for space)</td>
+						</tr>
+						<tr>
+							<td>+</td>
+							<td>Sometimes treated as space in URLs</td>
+						</tr>
+						<tr>
+							<td>\</td>
+							<td>Backslashes can cause parsing issues</td>
+						</tr>
+						<tr>
+							<td>"</td>
+							<td>Double quotes are not URL-safe</td>
+						</tr>
+						<tr>
+							<td>'</td>
+							<td>Single quotes can interfere with parsing</td>
+						</tr>
+						<tr>
+							<td><, ></td>
+							<td>Angle brackets can be interpreted as HTML</td>
+						</tr>
+						<tr>
+							<td>`	`</td>
+						</tr>
+					</table>
+
+					<p>2. Special Symbols (Can Be Used with Encoding)</p>
+					<p>These symbols are technically allowed but require proper encoding:</p>
+
+					<table class="w3-table">
+						<tr>
+							<th>Character</th>	
+							<th>URL Encoding</th>
+						</tr>
+						<tr>
+							<td>/</td>	
+							<td>Encoded as %2F (Avoid using inside dynamic parameters)</td>
+						</tr>
+						<tr>
+							<td>:</td>	
+							<td>Encoded as %3A (Used for parameters in REST APIs)</td>
+						</tr>
+						<tr>
+							<td>@</td>	
+							<td>Encoded as %40</td>
+						</tr>
+						<tr>
+							<td>[ ]</td>
+							<td>Encoded as %5B and %5D (Used in IPv6 addresses)</td>
+						</tr>
+						<tr>
+							<td>{ }</td>
+							<td>Encoded as %7B and %7D (Used in API documentation)</td>
+						</tr>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script src="web_app.js"></script>
+</body>
+</html>
+
+

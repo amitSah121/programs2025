@@ -1,0 +1,1 @@
+[{"route": "/api/user/:id/order/:d/:io", "handler": "get_user_order", "method": "GET", "code": "def get_user_order(id, d, io): return {'user_id': id, 'hg': d, 'ii': io}"}, {"route": "/api/data/:t", "handler": "data", "method": "POST", "code": "def data(data,t):\n  return data[\"data\"][\"score\"]"}]

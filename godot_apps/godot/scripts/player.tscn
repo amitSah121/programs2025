@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://swmvt8oswlrd"]
+
+[node name="Player" type="Node2D"]
+
+[node name="message" type="Label" parent="."]
+offset_right = 79.0
+offset_bottom = 23.0

@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://bfnqto2rte2f8"]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_0lgjw"]
+[ext_resource type="Texture2D" uid="uid://bwak33nujolpe" path="res://assets/simple_game.png" id="1_expho"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_a8xou"]
+radius = 7.0
+height = 14.0
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_0lgjw")
+
+[node name="SimpleGame" type="Sprite2D" parent="."]
+texture = ExtResource("1_expho")
+hframes = 8
+vframes = 8
+frame = 13
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-2, 0)
+shape = SubResource("CapsuleShape2D_a8xou")

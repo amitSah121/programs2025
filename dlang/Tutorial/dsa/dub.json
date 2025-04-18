@@ -1,0 +1,23 @@
+{
+    "name": "dsa",
+    "targetName": "dsa",
+    "targetType": "executable",
+    "targetPath": "bin",
+		"configurations": [
+        {
+            "name": "list",
+            "mainSourceFile": "source/list.d",
+						"versions": ["listmain"]
+        },
+				{
+            "name": "mergesort",
+						"sourceFiles":  ["source/mergesort.d","source/list.d"],
+						"versions": ["mergesortmain"]
+        },
+				{
+            "name": "quicksort",
+						"sourceFiles":  ["source/quicksort.d","source/list.d"],
+						"versions": ["quicksortmain"]
+        }
+    ]
+}

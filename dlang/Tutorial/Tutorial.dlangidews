@@ -1,0 +1,10 @@
+{
+    "name": "Tutorial",
+    "description": " / ",
+    "projects": {
+        "tutorials": "tutorials/dub.json",
+        "dsa": "dsa/dub.json"
+    },
+    "includePath": {
+    }
+}

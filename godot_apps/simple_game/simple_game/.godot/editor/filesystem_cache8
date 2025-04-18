@@ -1,0 +1,14 @@
+ea4bc82a6ad023ab7ee23ee620429895
+::res://::1742378440
+icon.svg::CompressedTexture2D::2602775474952955500::1742232050::1742232070::1::::<><>::
+::res://assets/::1742378656
+simple_game.png::CompressedTexture2D::3931233907544375662::1742239662::1742239816::1::::<><>::
+simple_game_tiles.png::CompressedTexture2D::976466540143802510::1742378612::1742378662::1::::<><>::
+::res://scenes/::1742378484
+level_1.tscn::PackedScene::5995568003811375496::1742378484::0::1::::<><>::uid://n6ai5ajjvl5o::::res://assets/simple_game_tiles.png
+player.tscn::PackedScene::2765207992489098983::1742375850::0::1::::<><>::res://scripts/player.gd<>uid://bwak33nujolpe::::res://assets/simple_game.png
+random_enemy.tscn::PackedScene::1835173617749153723::1742375850::0::1::::<><>::res://scripts/random_enemy.gd<>uid://bwak33nujolpe::::res://assets/simple_game.png
+world.tscn::PackedScene::8500457419903134528::1742375852::0::1::::<><>::uid://bfnqto2rte2f8::::res://scenes/player.tscn
+::res://scripts/::1742240852
+player.gd::GDScript::-1::1742240852::0::1::::<>CharacterBody2D<>::
+random_enemy.gd::GDScript::-1::1742240666::0::1::::<>Area2D<>::

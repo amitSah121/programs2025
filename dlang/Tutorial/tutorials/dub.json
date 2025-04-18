@@ -1,0 +1,19 @@
+{
+	"dependencies": {
+		"dray": ">=5.0.0-r5 <5.1.0-0"
+	},
+	"name": "tutorials",
+	"targetName": "tutorials",
+	"targetPath": "bin",
+	"targetType": "executable",
+	"configurations": [
+        {
+            "name": "main1",
+            "mainSourceFile": "source/test_1.d"
+        },
+        {
+            "name": "main2",
+            "mainSourceFile": "source/test_2.d"
+        }
+    ]
+}

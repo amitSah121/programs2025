@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebChucK Example</title>
+</head>
+<body>
+    <button id="action">Start and Play</button>
+    <div id="status">Status: Waiting for initialization...</div>
+    
+    <script type="module">
+        import { Chuck } from './webchuck/wc-bundle.js'
+        
+        // Get status display element
+        const statusDisplay = document.getElementById('status');
+        
+        // Update status function
+        function updateStatus(message) {
+            statusDisplay.textContent = `Status: ${message}`;
+            console.log(message);
+        }
+
+        async function initChuck() {
+            try {
+                updateStatus('Starting Chuck initialization...');
+                
+                // Initialize Chuck with more verbose options
+                const theChuck = await Chuck.init([]);
+                updateStatus('Chuck initialized successfully');
+                
+                document.querySelector("#action").addEventListener("click", async () => {
+                    try {
+                        updateStatus('Creating audio context...');
+                        await theChuck.createContext();
+                        updateStatus('Audio context created');
+                        
+                        updateStatus('Running ChucK code...');
+                        await theChuck.runCode(`
+                            // Create a simple test tone
+                            SinOsc sin => dac;
+                            1.0 => sin.gain;  // Full volume for testing
+                            440 => sin.freq;
+                            // Keep it running longer for testing
+                            5::second => now;
+                        `);
+                        updateStatus('ChucK code executed - Should hear sound for 5 seconds');
+                    } catch (error) {
+                        updateStatus(`Error during playback: ${error.message}`);
+                        console.error('Playback error:', error);
+                    }
+                });
+                
+            } catch (error) {
+                updateStatus(`Initialization error: ${error.message}`);
+                console.error('Init error:', error);
+            }
+        }
+
+        // Start initialization when page loads
+        initChuck();
+    </script>
+</body>
+</html>

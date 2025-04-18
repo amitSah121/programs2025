@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://1e8bn2xw5ix4"]
+
+[ext_resource type="Script" path="res://scripts/random_enemy.gd" id="1_1b8qj"]
+[ext_resource type="Texture2D" uid="uid://bwak33nujolpe" path="res://assets/simple_game.png" id="1_i1rhy"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7p6f2"]
+size = Vector2(16, 9)
+
+[node name="random_enemy" type="Area2D"]
+script = ExtResource("1_1b8qj")
+
+[node name="SimpleGame" type="Sprite2D" parent="."]
+texture = ExtResource("1_i1rhy")
+hframes = 16
+vframes = 16
+frame = 15
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -0.5)
+shape = SubResource("RectangleShape2D_7p6f2")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

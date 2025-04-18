@@ -1,0 +1,171 @@
+
+Custom MicroPython OS Standard Library Structure (for Pi Pico)
+==============================================================
+
+1. machine
+----------
+- GPIO(pin).read()/write()
+- PWM.set(freq, duty)
+- ADC.read()
+- UART.send()/recv()
+- I2C.read()/write()
+- SPI.read()/write()
+- Timer.start()/stop()
+
+2. os
+-----
+- sleep(ms)
+- time.now()
+- uptime()
+- gc.collect()
+- sys.info()
+- mem.free()
+
+3. core
+--------
+- run_on_core0(fn)
+- run_on_core1(fn)
+- shared_var.set()/get()
+- mutex.acquire()/release()
+
+4. scheduler
+------------
+- spawn(task)
+- kill(task_id)
+- yield_now()
+- async / await
+
+5. fs (file system)
+-------------------
+- fs.write(path, data)
+- fs.read(path)
+- fs.list()
+- fs.remove(path)
+
+6. net (WiFi / MQTT)
+--------------------
+- wifi.connect()
+- mqtt.connect()
+- mqtt.pub()
+- mqtt.sub()
+
+7. display
+----------
+- screen.print()
+- screen.clear()
+- screen.draw_rect()
+
+8. sound
+--------
+- tone(freq, duration)
+- play('sound.wav')
+
+9. math
+--------
+- sin(), cos(), pow(), round()
+- map()
+
+10. utils
+----------
+- randint()
+- clamp()
+- debounce(fn)
+
+11. event
+----------
+- on(event, cb)
+- trigger(event)
+
+12. log
+--------
+- log.info()
+- log.warn()
+- log.error()
+
+13. config
+-----------
+- load_config()
+- save_config()
+
+14. crypto
+-----------
+- sha256(data)
+- xor_cipher(data, key)
+
+15. storage
+------------
+- kv.set(k, v)
+- kv.get(k)
+
+16. interrupts
+---------------
+- attach_irq(pin, trigger, cb)
+
+17. profiling
+--------------
+- profile(func)
+- timeit(func)
+
+18. errors
+-----------
+- DeviceError, TimeoutError, IOError, etc.
+
+19. shell
+----------
+- ls()
+- ps()
+- help()
+
+20. permissions
+----------------
+- set_user_perm(device, level)
+
+21. usb
+--------
+- usb.hid_report()
+- usb.serial_write()
+
+22. graphics
+-------------
+- draw_line()
+- draw_image()
+
+23. networking
+---------------
+- http.get()
+- tcp.connect()
+- udp.sendto()
+
+24. drivers
+------------
+- Driver.register(name, init)
+- Driver.init_all()
+
+25. sensors
+------------
+- MPU6050.read()
+- DHT11.temp()
+- DS18B20.read()
+
+26. fsm (finite state machine)
+------------------------------
+- FSM()
+- fsm.run(input)
+
+27. debug
+----------
+- debug.toggle()
+
+28. heap
+---------
+- heap.monitor()
+
+29. sys.trace
+--------------
+- trace(func)
+- traceback()
+
+30. core.halt
+--------------
+- halt_core()
+- pause()
