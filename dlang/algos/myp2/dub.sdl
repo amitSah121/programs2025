@@ -1,0 +1,6 @@
+name "myp2"
+description "A minimal D application."
+authors "groupe123crazy"
+copyright "Copyright © 2025, groupe123crazy"
+license "proprietary"
+dependency "parin" version="~>0.0.44"

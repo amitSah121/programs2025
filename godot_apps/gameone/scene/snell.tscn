@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://bm1v1u34d2lxg"]
+
+[ext_resource type="Texture2D" uid="uid://dop4tv1s2t88k" path="res://assets/ball_game_characters.png" id="1_co82e"]
+[ext_resource type="Script" path="res://scene/snell.gd" id="1_gn23v"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gddn3"]
+radius = 5.0
+height = 10.0
+
+[node name="snell" type="Area2D"]
+script = ExtResource("1_gn23v")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_co82e")
+hframes = 10
+vframes = 10
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 3)
+shape = SubResource("CapsuleShape2D_gddn3")

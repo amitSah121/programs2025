@@ -1,0 +1,15 @@
+{
+	"authors": [
+		"groupe123crazy"
+	],
+	"copyright": "Copyright © 2025, groupe123crazy",
+	"dependencies": {
+		"bindbc-sdl": "~>2.2.0"
+	},
+	"versions": ["BindSDL_Static"] ,
+	"description": "A minimal D application.",
+	"license": "proprietary",
+	"name": "myp3",
+	"libs": ["SDL2"],
+    "lflags": ["-L/usr/lib/x86_64-linux-gnu"]
+}

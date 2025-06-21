@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://im417i11pu1v"]
+
+[ext_resource type="PackedScene" uid="uid://d1fawowp74sw5" path="res://scene/level.tscn" id="1_r2taa"]
+[ext_resource type="PackedScene" uid="uid://eyuvf1006ppg" path="res://scene/ball.tscn" id="2_ejofd"]
+
+[node name="world" type="Node2D"]
+position = Vector2(-1, -4)
+
+[node name="level" parent="." instance=ExtResource("1_r2taa")]
+position = Vector2(1, 4)
+
+[node name="ball" parent="." instance=ExtResource("2_ejofd")]
+position = Vector2(41, 69)
+
+[node name="Camera2D" type="Camera2D" parent="ball"]
+zoom = Vector2(6, 6)
+limit_left = 0
+limit_top = 0
+limit_right = 768
+limit_bottom = 10

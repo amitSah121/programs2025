@@ -1,0 +1,6 @@
+name "myp1"
+description "A minimal D application."
+authors "groupe"
+copyright "Copyright © 2025, groupe"
+license "BSD-1-Clause"
+dependency "dray" version=">=5.0.0-r5 <5.1.0-0"

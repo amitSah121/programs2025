@@ -1,0 +1,16 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/myp3
+myp3.so
+myp3.dylib
+myp3.dll
+myp3.a
+myp3.lib
+myp3-test-*
+*.exe
+*.pdb
+*.o
+*.obj
+*.lst

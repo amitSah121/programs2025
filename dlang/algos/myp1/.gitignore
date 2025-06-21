@@ -1,0 +1,16 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/myp1
+myp1.so
+myp1.dylib
+myp1.dll
+myp1.a
+myp1.lib
+myp1-test-*
+*.exe
+*.pdb
+*.o
+*.obj
+*.lst

@@ -1,0 +1,16 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/myp2
+myp2.so
+myp2.dylib
+myp2.dll
+myp2.a
+myp2.lib
+myp2-test-*
+*.exe
+*.pdb
+*.o
+*.obj
+*.lst
