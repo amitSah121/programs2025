@@ -1,0 +1,65 @@
+
+.editor {
+    width: 100%;
+    /* box-sizing: border-box; */
+}
+
+.editor.selected {
+  border: 2px dashed #2196f3;
+  background-color: #f1faff;
+}
+
+
+p{
+    margin: 0px;
+    padding: 4px;
+}
+
+.ul{
+    list-style-type: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.ul li{
+  display: block;
+}
+
+.ul li span{
+  padding: 8px 16px;
+}
+
+.ul li li {
+    padding-left: 16px;
+    display: block;
+}
+
+.cursor{
+    cursor: pointer;
+}
+
+
+.markdown {
+    white-space: pre-wrap;
+    border: 0px;
+    min-height: 20px;
+    cursor: text;
+}
+
+
+
+textarea {
+    width: 100%;
+    min-height: 20px;
+    resize: none;
+    overflow: hidden;
+    /* font-size: 16px; */
+    border: 0px;
+}
+
+span {
+  display: inline-block;     /* Or use block */
+  white-space: pre-wrap;     /* Wrap lines and preserve whitespace */
+  word-wrap: break-word;     /* Break long words if needed */
+  max-width: 100%;           /* Prevent overflow */
+}

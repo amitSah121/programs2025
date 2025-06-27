@@ -1,0 +1,509 @@
+no, I need to update a lot of things in it, first I need some apis
+let me give you a description of what I mean
+
+first if all, all apis should start with /api, 
+
+1) File systems , it should always only target to res/ folder and its subdirectories
+- /api/file?name get method, to read file inside the folder or subfolder
+- /api/file?name post method to save content to file inside the folder or subfolder
+- /api/fileProperties?name&newName&... post, and other necessary properties
+- /api/fileMethods/newFile?name&folderPath post, to create new file inside a folder or subfolder
+- /api/fileMethods/copyFile?filePath&newLocation post,to copy file inside a folder or subfolder
+- /api/fileMethods/moveFile?filePath&newLocation post,to move new file inside a folder or subfolder
+- /api/fileMethods/deleteFile?filePath post,to delete new file inside a folder or subfolder
+- /api/allFiles get, to read all files and folders in json format preserving the hierarchy
+- /api/fileMethods/newFolder?folderPath=...&name=...	POST	Create a new folder	Folders are not covered yet
+- /api/fileMethods/deleteFolder?folderPath=...	POST	Delete a folder and its contents	Important for cleanup
+- /api/fileMethods/renameFolder?folderPath=...&newName=...	POST	Rename a folder	Complements fileProperties
+- /api/fileStats?name=...	GET	Get file size, last modified, etc.	For UI preview/info panel
+- /api/fileMethods/duplicateFile?filePath=...	POST	Creates a copy in the same folder with _copy suffix	Common in editors
+- Sanitize all name, filePath, and folderPath inputs to stay within res/ and prevent path traversal attacks (../).
+- /api/file/upload Post, to upload from local device
+- /api/changeProject Post, to change the current project workspace so that i don't need to shutdown nodejs myself whenever I need new space
+
+2) Audio apis
+- /api/audio/upload	POST	Upload a new audio file (drag & drop sample upload) // might not be necessary
+- /api/audio/list?format=mp3	GET	List audio files by format // might not be necessary
+- /api/audio/delete?path=...	POST	Delete audio file // might not be necessary
+- /api/audio/search?query=...	GET	Search by filename or metadata // might not be necessary
+- /api/audio/preview?path=...	GET	Stream/preview audio (if not already supported statically) // not necessary
+
+3) File based persistence for undo and redo
+res/project/default/history/
+├── undo/
+│   ├── 0.json
+│   ├── 1.json
+├── redo/
+│   ├── 2.json
+
+
+my project structure is like this-
+daw
+- public
+- - index.html
+- - style
+- - - w3.css
+- - - colors.css
+- - - index.css
+- - script
+- - - index.js
+- - - w3.js
+- - - tone.js
+- - - svg.js
+- res
+- - project = everything to be saved in a single project
+- - - default = one project for testing
+- - audio
+- - - mp3
+- - - wav
+- - - ...
+- index.js = server file
+- package.json
+
+//
+res/project/default/
+├── project.json              # Main metadata (name, tempo, bpm, etc.)
+├── tracks/
+│   ├── track_0.notes.json    # Note matrix (e.g., MIDI grid for track 0)
+│   ├── track_1.notes.json
+├── automation/
+│   ├── track_0.volume.json   # Automation curve for volume
+│   ├── track_0.pan.json      # Automation curve for panning
+|   ├── intro_fx_automation.json 
+│   ├── master.filter.json    # Automation on master effects
+├── audioRefs/
+│   └── track_2.sample.json   # External audio ref info (clip timing etc.)
+├── history/
+│   ├── undo/
+│   │   ├── 0.json
+│   │   ├── 1.json
+│   ├── redo/
+│       ├── 0.json
+│       ├── ...
+
+//
+
+
+conventions
+===========
+The whole app has two tabs, 
+a) note matrix
+b) project main tab
+
+
+1) note matrix
+- It should display a list of created notes in this project at the sidebar, the structure can be of a folder structure that contains files kinda approach , meaning each folder can have multiple folders or files, and each file represent one sequence of notes
+- each file can have different interval of total bars, if major or any other kind of display preferred, number of notes in a single cell( for playing faster softer notes like 2 notes a bar kinda ) and type of lageto/portamento/glissando to be used
+- each cell can have its own starting and ending point and can span through multiple bars, can have its own velocity, and volume
+- also, there are three modes of making notes , 
+a) either by clicking and adjusting individual cells , 
+b) or by direct note editing like ( if c-major scale selected then on that basis will the notes cmaj, cmin, dmaj, dmin, d7 .... be) and such that a single row can be filled directly
+c) or by adding row basis, bars are fixed first then on the basis of how many rows are required its adjusted and then each column is programmed accordingly, e.g. 1st column can have c3, E3, G3 in 1st , 2nd and 3rd row, representing cmajor, and each cell has the ability to adjust volume and velocity as well starting and ending of notes and can span to other bars. // not necessary , with free floating noteWrite and row adder I can write this as well
+- and I want to provide a right sidebar to add a single synth with ability to chain multiple effects so that I can test and save it for future use, and each file will have its own series of these
+# note_track_{n}.json
+{
+  "metadata": {
+    "name": "intro",
+    "bars": 16,                 // Number of columns (bars)
+    "mode": "C Major",
+    "lagType": "glissando",
+    "folderPath": "chords/maj"
+  },
+  "notes": [
+    {
+      "note": "E4",             // Can be a single note or chord name (e.g., "Emaj", "C3+E3+G3")
+      "column": 0,
+      "start": 0.2,             // Relative to column
+      "end": 2.6,               // Can span bars
+      "velocity": 0.6,
+      "volume": 0.9,
+      "row": 1
+    },
+    {
+      "note": "Cmaj",           // Can also be named chords
+      "column": 3,
+      "start": 0.0,
+      "end": 1.0,
+      "velocity": 1.0,
+      "volume": 0.8,
+      "row": 0
+    }
+  ],
+  "noteWriterForm": {
+    "rows": 3,
+    "columns": 16,
+    "columnAssignments": [
+      ["C3", "E3", "G3"],
+      ["D3", "F3", "A3"],
+      ["E3", "G3", "B3"],
+      ["C3", "E3", "G3"],
+      ["D3maj", "F3", "A3maj"]
+    ]
+  },
+  "synthChain": {
+    "instrument": {
+      "type": "synth",
+      "preset": "sine-lead"
+    },
+    "effects": [
+      {
+        "type": "delay",
+        "params": { "time": 0.3, "feedback": 0.4 }
+      },
+      {
+        "type": "reverb",
+        "params": { "decay": 2.5 }
+      }
+    ]
+  }
+}
+
+Audio clips
+=========
+{
+  "file": "../../../audio/wav/kick1.wav",
+  "start": 0.0,
+  "end": 2.0,
+  "offset": 0.5,
+  "volume": 0.8
+}
+
+
+Project timeline
+==================
+Synth-Freezing Cache System
+res/project/default/cache/
+  ├── chords_intro.wav
+  ├── bassline_rendered.wav
+
+timeline
+{
+  "tracks": [
+    {
+      "type": "audio",
+      "source": "note_matrix/chords/intro.json",  // Origin reference
+      "rendered": "cache/chords/intro.wav",              // Rendered file
+      "start": 4.0,                               // In bars or seconds
+      "duration": 8.0,
+      "gain": 0.9,
+      "group": "intro_leads"
+    },
+    {
+      "type": "sample",
+      "source": "audio/wav/kick.wav",
+      "start": 0.0,
+      "duration": 1.0
+    }
+  ]
+}
+Let each track in the timeline have:
+- a unique ID
+- an origin pointer (so you can re-render when needed)
+- gain and panning
+- group (for routing through the effect chain)
+
+res/project/default/cache/
+├── note_matrix/
+│   ├── chords/
+│   │   └── intro__9f1a.wav       ← rendered from intro.json (uuid or hash-based ID)
+├── sample/
+│   └── kick.wav
+
+// effects json
+{
+  "chains": [
+    {
+      "id": "intro_fx",
+      "name": "Intro FX",
+      "row": 0,  // Which timeline row or audio row this chain belongs to
+
+      "src": {
+        "type": "synth_hysenberg",
+        "id": "synth1",
+        "parameters": {
+          "oscillator": "sawtooth",
+          "attack": 0.1,
+          "release": 1.2,
+          "filterFreq": 1200
+        }
+      },
+
+      "ui": {
+        "controls": [
+          {
+            "type": "slider",
+            "label": "Room Size",
+            "param": "reverb.decay",
+            "min": 0.1,
+            "max": 10.0,
+            "default": 2.5
+          },
+          {
+            "type": "toggle",
+            "label": "Enable Chorus",
+            "param": "chorus.bypass",
+            "default": false
+          }
+        ]
+      },
+
+      "groups": [
+        {
+          "type": "serial",
+          "effects": [
+            {
+              "type": "reverb",
+              "id": "reverb",
+              "parameters": {
+                "decay": 2.5,
+                "wet": 0.6
+              }
+            },
+            {
+              "type": "chorus",
+              "id": "chorus",
+              "parameters": {
+                "depth": 0.3,
+                "rate": 2.5,
+                "bypass": false
+              }
+            }
+          ]
+        },
+        {
+          "type": "parallel",
+          "branches": [
+            [
+              {
+                "type": "distortion",
+                "id": "dist1",
+                "parameters": {
+                  "amount": 0.5,
+                  "oversample": "4x"
+                }
+              },
+              {
+                "type": "delay",
+                "id": "delay1",
+                "parameters": {
+                  "time": "8n",
+                  "feedback": 0.4
+                }
+              }
+            ],
+            [
+              {
+                "type": "chorus",
+                "id": "chorus2",
+                "parameters": {
+                  "depth": 0.6,
+                  "rate": 1.8
+                }
+              }
+            ]
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+automation
+===========
+res/project/<project-name>/automation/
+  └── intro_fx_automation.json
+
+
+{
+  "metadata": {
+    "name": "intro_fx_automation",
+    "targetFile": "chains/main.json",
+    "chainId": "intro_fx",       // Refers to the chain block
+    "row": 0,                    // Optional: for grouping by timeline row
+    "duration": 16,              // in bars
+    "resolution": 128,           // curve resolution
+    "loop": false
+  },
+
+  "curves": [
+    {
+      "id": "curve1",
+      "path": "M0,1 C0.2,0.8 0.5,0.5 1,0",    // Normalized (0–1) SVG path
+      "mapping": [
+        {
+          "target": "src",
+          "param": "filterFreq",             // Synth parameter
+          "min": 300,
+          "max": 1200
+        },
+        {
+          "effectId": "reverb",
+          "param": "decay",                  // Reverb effect parameter
+          "min": 1.0,
+          "max": 5.0
+        }
+      ]
+    },
+    {
+      "id": "curve2",
+      "path": "M0,0 L1,1",
+      "mapping": [
+        {
+          "effectId": "chorus",
+          "param": "depth",
+          "min": 0.0,
+          "max": 1.0
+        },
+        {
+          "effectId": "chorus2",             // Parallel branch chorus
+          "param": "rate",
+          "min": 1.0,
+          "max": 3.0
+        }
+      ]
+    },
+    {
+      "id": "curve3",
+      "path": "M0.1,0.2 L0.9,0.9",
+      "mapping": [
+        {
+          "file": "timeline.json",
+          "param": "tracks[0].gain",
+          "min": 0.5,
+          "max": 1.0
+        }
+      ]
+    }
+  ]
+}
+
+
+
+
+undo redo
+==========
+
+res/project/default/
+├── history/
+│   ├── undo/
+│   │   ├── 0001.json
+│   │   ├── 0002.json
+│   ├── redo/
+│   │   ├── 0003.json
+
+
+{
+  "timestamp": 1719181200000,
+  "description": "Moved intro audio to bar 8",
+  "changes": [
+    {
+      "file": "timeline.json",
+      "patches": [
+        {
+          "path": "tracks[0].start",
+          "before": 4.0,
+          "after": 8.0
+        },
+        {
+          "path": "tracks[0].duration",
+          "before": 2.0,
+          "after": 3.0
+        }
+      ]
+    },
+    {
+      "file": "note_matrix/chords/intro.json",
+      "before": { /* minimal affected object */ },
+      "after": { /* updated object */ }
+    },
+    {
+      "file": "chains/main.json",
+      "before": { /* before */ },
+      "after": { /* after */ }
+    }
+  ]
+}
+
+
+
+stacks of past actions
+{
+  "undo": ["0003.json", "0004.json"],
+  "redo": ["0005.json"],
+  "lastActionId": "0004"
+}
+
+
+
+======================
+
+ Final DAW Feature Checklist (File Structure + Conventions)
+🎼 Note Matrix System
+ File/folder-based note containers per project
+
+ Custom number of bars, rows, and cell-wise velocity/volume/start/end
+
+ Supports multiple modes: manual, scale, grid
+
+ Per-file synth + effects chain
+
+ JSON format for notes + layout (✅ complete)
+
+🧩 Effect Chains
+ Source instrument (src) per chain with parameters
+
+ Serial + parallel effects
+
+ Effects have IDs and parameters for automation
+
+ Chain belongs to a timeline row
+
+ Editable UI controls for any param (✅ complete)
+
+⏱ Timeline System
+ All notes rendered to .wav via Tone.Offline
+
+ Timeline tracks can include both note and sample files
+
+ Tracks have gain, start, duration, group, etc.
+
+ Groups affect UI-based automation/mixing/organization
+
+ UI shows audio waveforms only (✅ complete)
+
+📈 Automation System
+ SVG.js-based editable curves
+
+ Curves can target synth or effect or external file
+
+ Support for parameter grouping (one curve → multiple targets)
+
+ Stored in per-project automation/ folder
+
+ Duration, resolution, loop, and precision fully controllable (✅ complete)
+
+🔄 Undo/Redo System
+ JSON-based action log with patches or diffs
+
+ Efficient storage (delta-based, not whole state)
+
+ Timeline + note + chains fully restorable
+
+ Stack tracker in history/index.json (✅ complete)
+
+📂 File API System
+ Read/write/create/copy/move/delete any file in res/
+
+ /api/allFiles for recursive project listing
+
+ Locked within res/ sandbox for safety
+
+ File properties for renaming, metadata, etc. (✅ complete)
+
+🟡 Optional (for future):
+Feature	Status	Suggestion
+Project Settings	❓ Optional	Global tempo, time sig, default synth, sample rate
+MIDI/Controller Mapping	❌ Not yet	If you want external MIDI input
+Export Session as ZIP	❌ Not yet	To archive full project easily
+Asset Pool	❌ Not yet	Central location to reuse samples/synth presets
+Snap/Quantization Grid	❓ UI-stage	Could be handled in timeline editor

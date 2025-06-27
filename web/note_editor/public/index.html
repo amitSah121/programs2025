@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <title>W3.CSS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="w3.css" />
+  <link rel="stylesheet" href="index.css" />
+  <link rel="stylesheet" href="config.css" />
+  <link rel="stylesheet" href="my_css.css" />
+  <link rel="stylesheet" href="colors.css" />
+  <script src="w3.js"></script>
+  <body class="app-background">
+    <div class="w3-content w3-light-blue" id="body" style="max-width: 1200px">
+      <!-- Modal -->
+      <div id="orderModal" class="w3-modal" style="display: none">
+        <div
+          class="w3-modal-content w3-padding w3-card-4"
+          style="max-width: 600px"
+        >
+          <div class="w3-container">
+            <span
+              onclick="closeOrderEditor()"
+              class="w3-button w3-display-topright"
+              >&times;</span
+            >
+            <h3>Edit File Order</h3>
+            <textarea
+              id="orderTextArea"
+              class="w3-input w3-border w3-margin-top"
+              style="height: 300px"
+            ></textarea>
+            <button
+              onclick="submitOrder()"
+              class="w3-button w3-green w3-margin-top"
+            >
+              Update
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Header -->
+      <div class="w3-bar nav-color" id="navigation">
+        <h3 class="w3-bar-item w3-margin-right">📝 Note Editor</h3>
+
+        <button
+          class="w3-button w3-white w3-right w3-margin-top w3-margin-bottom w3-margin-right"
+          onclick="saveCurrentFile()"
+        >
+          💾 Save
+        </button>
+
+        <button
+          class="w3-button w3-white w3-right w3-margin-top w3-margin-bottom w3-margin-right"
+          onclick="openOrderEditor()"
+        >
+          ✏️ Edit Order
+        </button>
+
+        <button
+          class="w3-button w3-white w3-right w3-margin-top w3-margin-bottom w3-margin-right"
+          onclick="printEditor()"
+        >
+          🖨️ PDF
+        </button>
+      </div>
+
+      <!-- editor and sidebar -->
+      <div class="w3-row" style="height: 90vh" id="editor_and_sidebar">
+        <!-- Sidebar -->
+        <div class="w3-col l3 sidebar-color" style="height: 90vh; overflow:scroll;" id="sidebar">
+          <!-- shrunk sidebar -->
+          <div
+            class="w3-flex w3-hide"
+            style="
+              height: 90vh;
+              justify-content: center;
+              align-items: center;
+              flex-direction: column;
+            "
+            onclick="open_sidebar()"
+            id="sidebar-shrunk"
+          >
+            <span class="w3-large"> &rarr;</span>
+          </div>
+          <div class="w3-bar-block" id="sidebar-full">
+            <div class="w3-padding w3-row">
+              <span
+                class="w3-col l3 w3-right w3-large w3-btn w3-light-grey w3-hover-white"
+                onclick="close_sidebar()"
+                >X</span
+              >
+              <div class="w3-rest">
+                <span
+                  class="w3-large w3-btn w3-light-grey w3-hover-white"
+                  onclick="decrease_sidebar_width()"
+                  >&larr;</span
+                >
+                <span
+                  class="w3-large w3-btn w3-light-grey w3-hover-white"
+                  onclick="increase_sidebar_width()"
+                  >&rarr;</span
+                >
+              </div>
+              <hr class="w3-border-black" />
+            </div>
+            <ul class="ul" id="sidebar-elements"></ul>
+          </div>
+        </div>
+
+        <!-- editor -->
+        <div
+          class="w3-rest editor-color w3-padding"
+          style="height: 90vh; overflow: scroll"
+          id="editor"
+        >
+          <div id="container" class="w3-padding w3-border-bottom"></div>
+        </div>
+      </div>
+    </div>
+    <script src="index.js"></script>
+  </body>
+</html>

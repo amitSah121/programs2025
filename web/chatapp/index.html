@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC Chat</title>
+</head>
+<body>
+    <textarea id="chat" rows="10" cols="30" readonly></textarea><br>
+    <input id="message" type="text" placeholder="Type a message">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        const ws = new WebSocket("ws://localhost:3000"); // Replace with your server IP
+        const peerConnection = new RTCPeerConnection();
+        let dataChannel;
+
+        ws.onmessage = async event => {
+            const message = JSON.parse(event.data);
+
+            if (message.offer) {
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(message.offer));
+                const answer = await peerConnection.createAnswer();
+                await peerConnection.setLocalDescription(answer);
+                ws.send(JSON.stringify({ answer }));
+            } else if (message.answer) {
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(message.answer));
+            } else if (message.ice) {
+                peerConnection.addIceCandidate(new RTCIceCandidate(message.ice));
+            }
+        };
+
+        peerConnection.onicecandidate = event => {
+            if (event.candidate) {
+                ws.send(JSON.stringify({ ice: event.candidate }));
+            }
+        };
+
+        peerConnection.ondatachannel = event => {
+            dataChannel = event.channel;
+            dataChannel.onmessage = e => document.getElementById("chat").value += `\nPeer: ${e.data}`;
+        };
+
+        function startConnection() {
+            dataChannel = peerConnection.createDataChannel("chat");
+            dataChannel.onmessage = e => document.getElementById("chat").value += `\nPeer: ${e.data}`;
+
+            peerConnection.createOffer().then(offer => {
+                peerConnection.setLocalDescription(offer);
+                ws.send(JSON.stringify({ offer }));
+            });
+        }
+
+        function sendMessage() {
+            const message = document.getElementById("message").value;
+            document.getElementById("chat").value += `\nYou: ${message}`;
+            dataChannel.send(message);
+        }
+
+        startConnection();
+    </script>
+</body>
+</html>

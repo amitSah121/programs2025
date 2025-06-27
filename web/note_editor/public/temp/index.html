@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>File Manager Frontend</title>
+  <style>
+    textarea { width: 100%; height: 150px; margin: 10px 0; }
+    input[type="text"] { width: 60%; }
+    button { margin: 5px 0; }
+    pre { background: #eee; padding: 10px; overflow-x: auto; }
+  </style>
+</head>
+<body>
+
+  <h2>🧾 View All Files & Content</h2>
+  <button onclick="getFiles()">Get /api/files</button>
+  <pre id="filesDisplay"></pre>
+
+  <h2>📝 Update files_order.txt</h2>
+  <textarea id="orderInput" placeholder="- filename ide123..."></textarea><br>
+  <button onclick="updateOrder()">POST /api/update-order</button>
+  <pre id="orderResult"></pre>
+
+  <h2>📄 Read Any File</h2>
+  <input type="text" id="readFileName" placeholder="files_order.txt" />
+  <button onclick="readFile()">GET /api/file</button>
+  <pre id="readResult"></pre>
+
+  <h2>✍️ Write to Any File</h2>
+  <input type="text" id="writeFileName" placeholder="filename.txt" /><br>
+  <textarea id="writeContent" placeholder="File content..."></textarea><br>
+  <button onclick="writeFile()">POST /api/file</button>
+  <pre id="writeResult"></pre>
+
+<script>
+async function getFiles() {
+  const res = await fetch('/api/files');
+  const data = await res.json();
+  document.getElementById('filesDisplay').textContent = JSON.stringify(data, null, 2);
+}
+
+async function updateOrder() {
+  const text = document.getElementById('orderInput').value;
+  const res = await fetch('/api/update-order', {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: text
+  });
+  const data = await res.json();
+  document.getElementById('orderResult').textContent = JSON.stringify(data, null, 2);
+}
+
+async function readFile() {
+  const name = document.getElementById('readFileName').value;
+  const res = await fetch(`/api/file?name=${encodeURIComponent(name)}`);
+  const text = await res.text();
+  document.getElementById('readResult').textContent = text;
+}
+
+async function writeFile() {
+  const name = document.getElementById('writeFileName').value;
+  const content = document.getElementById('writeContent').value;
+
+//   console.log(name, content);
+  const res = await fetch('/api/file', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, content })
+  });
+  const result = await res.json();
+  document.getElementById('writeResult').textContent = JSON.stringify(result, null, 2);
+}
+</script>
+
+</body>
+</html>

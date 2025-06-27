@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>DAW</title>
+    <link rel="stylesheet" href="style/w3.css" />
+    <link rel="stylesheet" href="style/colors.css" />
+    <link rel="stylesheet" href="style/index.css" />
+    <script src="script/tone.js"></script>
+    <script src="script/w3.js"></script>
+    <script src="script/p5.min.js"></script>
+  </head>
+  <body class="w3-content w3-padding-large w3-sand" style="max-width: 1200px">
+    <!-- Top Menubar -->
+    <div class="w3-bar w3-indigo w3-padding">
+      <span class="w3-bar-item">
+        <span class="w3-blue w3-padding w3-circle">🎧</span> <b>MyDAW</b> —
+        <span id="projectName" class="w3-padding w3-white">default</span>
+      </span>
+
+      <!-- Dropdown Menus -->
+      <div id="timelineMenubar" style="display: none">
+        <div class="w3-dropdown-hover w3-bar-item w3-indigo" id="nav-file">
+          <!--
+        onclick="nav_menu('file')"
+        -->
+          File
+          <div class="w3-dropdown-content w3-bar-block w3-card-4" id="options">
+            <button class="w3-bar-item w3-btn">New File</button>
+            <button class="w3-bar-item w3-btn">Save File</button>
+            <button class="w3-bar-item w3-btn">Delete File</button>
+            <button class="w3-bar-item w3-btn">New Project</button>
+            <button class="w3-bar-item w3-btn">Open Project</button>
+            <button class="w3-bar-item w3-btn">Change Project</button>
+            <button class="w3-bar-item w3-btn">Save Project</button>
+            <button class="w3-bar-item w3-btn">Save As...</button>
+            <button class="w3-bar-item w3-btn">Export As</button>
+          </div>
+        </div>
+
+        <div class="w3-dropdown-hover w3-bar-item" id="nav-edit">
+          <!--
+        onclick="nav_menu('edit')"
+        -->
+          Edit
+          <div class="w3-dropdown-content w3-bar-block w3-card-4" id="options ">
+            <button class="w3-bar-item w3-btn">Undo</button>
+            <button class="w3-bar-item w3-btn">Redo</button>
+            <button class="w3-bar-item w3-btn">Search Note/Clip</button>
+            <button class="w3-bar-item w3-btn">Preferences</button>
+          </div>
+        </div>
+
+        <div class="w3-dropdown-hover w3-bar-item" id="nav-help">
+          <!--
+        onclick="nav_menu('help')"
+        -->
+          Help
+          <div class="w3-dropdown-content w3-bar-block w3-card-4" id="options">
+            <button
+              class="w3-bar-item w3-btn"
+              onclick="w3.show('#nav-help #model')"
+            >
+              manual
+            </button>
+            <div id="model" class="w3-modal" style="z-index: 99999">
+              <div class="w3-modal-content">
+                <div class="w3-container">
+                  <span
+                    onclick="w3.hide('#nav-help #model')"
+                    class="w3-button w3-display-topright"
+                    >&times;</span
+                  >
+                  <p>Some text in the Modal..</p>
+                  <p>Some text in the Modal..</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="noteMatrixMenubar">
+        <div class="w3-dropdown-hover w3-bar-item w3-indigo" id="nav-file">
+          <!--
+        onclick="nav_menu('file')"
+        -->
+          File
+          <div id="options" class="w3-dropdown-content w3-bar-block w3-card-4">
+            <button class="w3-bar-item w3-btn">New Note</button>
+            <button class="w3-bar-item w3-btn">Delete Note</button>
+            <button class="w3-bar-item w3-btn">Rename Note</button>
+          </div>
+        </div>
+
+        <div class="w3-dropdown-hover w3-bar-item" id="nav-edit">
+          <!--
+        onclick="nav_menu('edit')"
+        -->
+          Edit
+          <div id="options" class="w3-dropdown-content w3-bar-block w3-card-4">
+            <button class="w3-bar-item w3-btn">New Track</button>
+            <button class="w3-bar-item w3-btn" onclick="undoTimeline()">
+              Undo
+            </button>
+            <button class="w3-bar-item w3-btn" onclick="redoTimeline()">
+              Redo
+            </button>
+          </div>
+        </div>
+
+        <div class="w3-dropdown-hover w3-bar-item" id="nav-help">
+          <!--
+        onclick="nav_menu('help')"
+        -->
+          Help
+          <div class="w3-dropdown-content w3-bar-block w3-card-4" id="options">
+            <button
+              class="w3-bar-item w3-btn"
+              onclick="w3.show('#nav-help #model')"
+            >
+              manual
+            </button>
+            <div id="model" class="w3-modal" style="z-index: 99999">
+              <div class="w3-modal-content">
+                <div class="w3-container">
+                  <span
+                    onclick="w3.hide('#nav-help #model')"
+                    class="w3-button w3-display-topright"
+                    >&times;</span
+                  >
+                  <p>Some text in the Modal..</p>
+                  <p>Some text in the Modal..</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Spacer -->
+      <div
+        class="w3-bar-item w3-right w3-btn w3-aqua"
+        id="nav-notematrix"
+        onclick="openMainTab('notematrix')"
+      >
+        Note Matrix
+      </div>
+      <div
+        class="w3-bar-item w3-right w3-btn w3-white"
+        id="nav-timeline"
+        onclick="openMainTab('timeline')"
+      >
+        Timeline
+      </div>
+    </div>
+
+    <!-- Main Views -->
+    <div
+      class="w3-row"
+      id="noteMatrixView"
+      style="height: 88vh"
+      id="editor_and_sidebar"
+    >
+      <ul
+        id="leftContextMenu"
+        class="w3-dropdown-content w3-card-4"
+        style="position: absolute; display: none; z-index: 10"
+      >
+        <li class="w3-bar-item w3-btn w3-small" id="newFile">New Track</li>
+        <li class="w3-bar-item w3-btn w3-small" id="newFolder">New Folder</li>
+        <li class="w3-bar-item w3-btn w3-small" id="deleteItem">Delete</li>
+        <li class="w3-bar-item w3-btn w3-small" id="renameItem">Rename</li>
+      </ul>
+
+      <!-- General Input Modal -->
+      <div id="nameModal" class="w3-modal" style="z-index: 99999">
+        <div class="w3-modal-content w3-card-4" style="max-width: 400px">
+          <header class="w3-container w3-blue">
+            <span
+              onclick="closeNameModal()"
+              class="w3-button w3-display-topright"
+              >&times;</span
+            >
+            <h3 id="nameModalTitle">Action</h3>
+          </header>
+          <div class="w3-container w3-padding">
+            <label id="nameModalLabel">Name:</label>
+            <input id="nameModalInput" class="w3-input w3-border" type="text" />
+          </div>
+          <footer class="w3-container w3-padding">
+            <button class="w3-button w3-green" onclick="confirmNameModal()">
+              Confirm
+            </button>
+            <button class="w3-button w3-red" onclick="closeNameModal()">
+              Cancel
+            </button>
+          </footer>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div
+        class="w3-col l2 w3-paper"
+        style="height: 88vh; overflow: scroll"
+        id="l-sidebar"
+      >
+        <div class="w3-bar-block" id="sidebar-full">
+          <div class="w3-padding w3-row">
+            <div class="w3-rest">
+              <span
+                class="w3-large w3-btn w3-light-grey w3-hover-white"
+                onclick="decrease_sidebar_width()"
+                >&larr;</span
+              >
+              <span
+                class="w3-large w3-btn w3-light-grey w3-hover-white"
+                onclick="increase_sidebar_width()"
+                >&rarr;</span
+              >
+            </div>
+            <hr class="w3-border-black" />
+          </div>
+          <div id="sidebar-elements"></div>
+        </div>
+      </div>
+
+      <!-- editor -->
+      <div
+        class="w3-col l8 w3-padding w3-blue-grey"
+        style="height: 88vh; overflow: scroll"
+        id="editor"
+      >
+        <div id="container" class="w3-padding w3-border-bottom">
+          <div id="noteMatrixToolbar" class="w3- w3-bar w3-light-grey">
+            <span class="w3-bar-item"><b id="trackFileName">intro</b></span>
+            <span class="w3-bar-item w3-pale-red"
+              ><b>Bars</b
+              ><span
+                id="bars"
+                class="w3-padding-small w3-white w3-margin-left my-num-options"
+                data-value="16"
+                >16</span
+              ></span
+            >
+            <span class="w3-bar-item w3-pale-red"
+              ><b>Bpm</b
+              ><span
+                id="bpm"
+                class="w3-padding-small w3-white w3-margin-left my-num-options"
+                data-value="120"
+                >120</span
+              ></span
+            >
+            <span class="w3-bar-item w3-button w3-pale-red w3-leftbar"
+              ><span
+                id="lageto"
+                class="my-enum-options w3-padding"
+                data-options='["lageto", "portamento", "glissando","none"]'
+                data-value="none"
+                >none</span
+              ></span
+            >
+
+            <button id="saveTrack" class="w3-bar-item w3-right w3-button">
+              💾 save
+            </button>
+          </div>
+
+          <!-- Scrollable Canvas -->
+          <div
+            id="noteRowLabels"
+            style="width: 50px; background: #f4f4f4; user-select: none"
+          ></div>
+
+          <div
+            id="noteMatrixCanvas"
+            class="w3-paper"
+            style="overflow: auto; height: 75vh; position: relative"
+          >
+            <!-- dynamic drawing here via SVG or divs -->
+            <div
+              id="noteMatrixGrid"
+              style="height: 75vh"
+              class="grid-editor"
+            ></div>
+            <div
+              id="overflowOverlay"
+              style="
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 9999;
+              "
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="w3-col l2 w3-paper"
+        style="height: 88vh; overflow: scroll"
+        id="r-sidebar"
+      >
+        <div class="w3-bar-block w3-center" id="sidebar-full">
+          <div class="w3-padding w3-row">
+            <span class="w3-rest w3-xlarge w3-padding w3-margin">
+              Effects
+            </span>
+          </div>
+          <hr class="w3-border-black" />
+          <div class="w3-row">
+            <button
+              id="playTrackBtn"
+              onclick="playNoteTrack()"
+              class="w3-button w3-half w3-green"
+            >
+              ▶️
+            </button>
+            <button
+              id="stopTrackBtn"
+              onclick="stopNoteTrack()"
+              class="w3-button w3-half w3-red"
+            >
+              ⏹
+            </button>
+
+            <select id="effectSelect" class="w3-select w3-border">
+              <option value="" disabled selected>Add Effect…</option>
+              <option value="Reverb">Reverb</option>
+              <option value="Chorus">Chorus</option>
+              <option value="Distortion">Distortion</option>
+              <option value="PingPongDelay">Ping‑Pong Delay</option>
+              <option value="PolySynth">PolySynth</option>
+              <option value="Player">Player</option>
+            </select>
+          </div>
+          <div id="effectsContainer" class="w3-margin-top"></div>
+        </div>
+        <ul class="ul" id="sidebar-elements"></ul>
+      </div>
+    </div>
+    <!-- </div> -->
+
+    <div
+      id="timelineView"
+      class="main-tab w3-container w3-paper w3-hide"
+      style="height: 88vh"
+    >
+      <ul
+        id="leftContextMenuTl"
+        class="w3-dropdown-content w3-card-4"
+        style="position: absolute; display: none; z-index: 10"
+      >
+        <li class="w3-bar-item w3-btn w3-small" id="newFile">New File</li>
+        <li class="w3-bar-item w3-btn w3-small" id="newFolder">New Folder</li>
+        <li class="w3-bar-item w3-btn w3-small" id="deleteItem">Delete</li>
+        <li class="w3-bar-item w3-btn w3-small" id="renameItem">Rename</li>
+        <li class="w3-bar-item w3-btn w3-small" id="copyItem">copy</li>
+      </ul>
+
+      <div id="nameModal" class="w3-modal" style="z-index: 99999">
+        <div class="w3-modal-content w3-card-4" style="max-width: 400px">
+          <header class="w3-container w3-blue">
+            <span
+              onclick="closeNameModalTl()"
+              class="w3-button w3-display-topright"
+              >&times;</span
+            >
+            <h3 id="nameModalTitle">Action</h3>
+          </header>
+          <div class="w3-container w3-padding">
+            <label id="nameModalLabel">Name:</label>
+            <input id="nameModalInput" class="w3-input w3-border" type="text" />
+          </div>
+          <footer class="w3-container w3-padding">
+            <button class="w3-button w3-green" onclick="confirmNameModalTl()">
+              Confirm
+            </button>
+            <button class="w3-button w3-red" onclick="closeNameModalTl()">
+              Cancel
+            </button>
+          </footer>
+        </div>
+      </div>
+
+      <div
+        class="w3-col l2 w3-paper"
+        style="height: 88vh; overflow: scroll"
+        id="l-sidebar"
+      >
+        <div class="w3-bar-block" id="sidebar-full">
+          <div class="w3-padding w3-row">
+            <div class="w3-rest">
+              <span
+                class="w3-large w3-btn w3-light-grey w3-hover-white"
+                onclick="decrease_sidebar_width_timeline()"
+                >&larr;</span
+              >
+              <span
+                class="w3-large w3-btn w3-light-grey w3-hover-white"
+                onclick="increase_sidebar_width_timeline()"
+                >&rarr;</span
+              >
+            </div>
+            <hr class="w3-border-black" />
+          </div>
+          <div id="sidebar-elements"></div>
+        </div>
+      </div>
+
+      <!-- editor -->
+      <div
+        class="w3-col l8 w3-blue-grey w3-center"
+        style="height: 88vh; overflow: scroll"
+        id="editor"
+      >
+        <div class="w3-bar w3-container w3-paper w3-margin">
+          <span class="w3-btn w3-bar-item"
+            >Bars:
+            <span class="my-num-options" id="bars" data-value="16"
+              >16</span
+            ></span
+          >
+          <span class="w3-btn w3-bar-item"
+            >Beats:
+            <span class="my-num-options" id="bpms" data-value="120"
+              >120</span
+            ></span
+          >
+          <span class="w3-button w3-right">💾 Save</span>
+          <span class="w3-button w3-right">Stop</span>
+          <span class="w3-button w3-right" onclick="playTimeline()">Play</span>
+        </div>
+        <div
+          id="canvas"
+          class="w3- w3-paper w3-margin-left"
+          style="height: 60vh; overflow: scroll; width: 96%"
+        ></div>
+        <div
+          id="bottomUi"
+          class="w3-flex w3-paper w3-margin-left w3-margin-top"
+          style="height: 15vh; overflow: scroll; width: 96%; gap: 8px"
+        >
+          <!-- BottomBar -->
+        </div>
+      </div>
+      <div
+        class="w3-col l2 w3-paper"
+        style="height: 88vh; overflow: scroll"
+        id="r-sidebar"
+      >
+        <div class="w3-bar-block w3-center" id="sidebar-full">
+          <div class="w3-padding w3-row">
+            <span class="w3-large">Editor</span>
+            <br />
+            <span
+              class="w3- my-enum-options w3-light-grey"
+              data-options='["MySynth", "player"]'
+              data-value="MySynth"
+              id="component-selection"
+              >MySynth</span
+            >
+            <span class="w3-button" id="add-component" onclick="add_component()"
+              >Add</span
+            >
+            <hr class="w3-border-black" />
+          </div>
+          <div
+            id="sidebar-elements"
+            class="w3-flex w3-margin-left"
+            style="flex-direction: column; gap: 8px; justify-content: center"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <template id="right_ui">
+        <div class="w3-pale-yellow">
+          <span class="w3-padding">Name</span>
+          <br />
+          <label class="w3-padding"
+            >solo <input type="checkbox" value="solo"
+          /></label>
+          <label>mute <input type="checkbox" value="mute" /></label>
+          <br />
+          <label class="w3-white w3-bar-item"
+            >vol<span
+              class="w3-margin-left w3-light-grey my-num-options"
+              data-value="0.8"
+              >0.8</span
+            ></label
+          ><label class="w3-white w3-bar-item"
+            >pan<span
+              class="w3-margin-left w3-light-grey my-num-options"
+              data-value="0.8"
+              >0.8</span
+            ></label
+          >
+        </div>
+      </template>
+      <template id="bottom_ui_inner">
+        <div class="w3-bar"></div>
+        <br />
+      </template>
+      <template id="bottom_ui_inner_buttons">
+        <label class="w3-white w3-bar-item"
+          >vol<span
+            class="w3-margin-left w3-light-grey my-num-options"
+            data-value="0.8"
+            >0.8</span
+          ></label
+        >
+      </template>
+      <template id="bottom_ui_inner_cover">
+        <div style="overflow: scroll; height: 80%"></div>
+      </template>
+      <template id="bottom_ui">
+        <div class="w3-pale-red w3-padding" style="height: 100%">
+          <span class="w3-padding" style="cursor: pointer">Name</span>
+          <br />
+
+          <div class="w3-modal">
+            <div class="w3-modal-content">
+              <div class="w3-container">
+                <span class="w3-button w3-display-topright">&times;</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <script src="script/index.js"></script>
+    <script src="script/nav.js"></script>
+    <script src="script/instrument.js"></script>
+    <script src="script/components/mysynth.js"></script>
+    <script src="script/notesEditor.js"></script>
+    <script src="script/timelineEditor.js"></script>
+  </body>
+</html>

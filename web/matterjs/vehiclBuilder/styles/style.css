@@ -1,0 +1,71 @@
+#game-container {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    margin: 20px auto;
+}
+
+#ui-container {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 100;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+button {
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.mode-button { background-color: #2196F3; }
+.mode-button:hover { background-color: #1976D2; }
+
+.block-button { background-color: #FF9800; }
+.block-button:hover { background-color: #F57C00; }
+
+.joint-button { background-color: #9C27B0; }
+.joint-button:hover { background-color: #7B1FA2; }
+
+.controller-button { background-color: #F44336; }
+.controller-button:hover { background-color: #D32F2F; }
+
+
+#attachment-ui select,
+#attachment-ui input,
+#controller-ui select,
+#controller-ui input {
+    background: #333;
+    color: white;
+    border: 1px solid #555;
+    padding: 5px;
+    margin: 5px 0;
+}
+
+#attachment-ui button,
+#controller-ui button {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px;
+    margin: 5px 0;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+#attachment-ui button:hover,
+#controller-ui button:hover {
+    background: #45a049;
+}

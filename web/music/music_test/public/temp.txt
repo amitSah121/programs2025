@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>DAW File Loader</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+    <script src="https://unpkg.com/tone@next"></script>
+  </head>
+  <body class="w3-container w3-padding-large">
+    <h2 class="w3-text-blue">🎧 Load Audio File from Server</h2>
+
+    <div class="w3-margin-bottom">
+      <label for="fileSelect">Select Audio File:</label>
+      <select id="fileSelect" class="w3-select" style="width: auto"></select>
+    </div>
+
+    <div class="w3-margin-top">
+      <button class="w3-button w3-green w3-margin-right" onclick="play()">
+        ▶ Play
+      </button>
+      <button class="w3-button w3-yellow w3-margin-right" onclick="pause()">
+        ⏸ Pause
+      </button>
+      <button class="w3-button w3-red" onclick="stop()">⏹ Stop</button>
+    </div>
+
+    <p class="w3-text-grey" id="status">Status: Waiting for file...</p>
+
+    <script>
+      let player = new Tone.Player().toDestination();
+      let isLoaded = false;
+      let isPlaying = false;
+      const statusEl = document.getElementById("status");
+      const selectEl = document.getElementById("fileSelect");
+      let pauseTime = 0;
+      let starttime = 0;
+
+      // Fetch file list and populate select
+      fetch("/list-audio")
+        .then((res) => res.json())
+        .then((files) => {
+          files.forEach((file) => {
+            const option = document.createElement("option");
+            option.value = file;
+            option.textContent = file;
+            selectEl.appendChild(option);
+          });
+        });
+
+      // Load selected file
+      selectEl.addEventListener("change", async () => {
+        const file = selectEl.value;
+        if (!file) return;
+
+        try {
+          await Tone.start(); // Unlock audio context
+          await player.load(`/audio/${file}`);
+          isLoaded = true;
+          isPlaying = false;
+          statusEl.textContent = `Status: Loaded ${file}`;
+          player.onstop = () => {
+            isPlaying = false;
+          };
+        } catch (err) {
+          statusEl.textContent = `Error loading file: ${file}`;
+          console.error(err);
+        }
+      });
+
+      function play() {
+        if (!isLoaded) return;
+        if (!isPlaying) {
+          player.start(undefined, pauseTime); // resume from pauseTime
+          starttime = player.now();
+          isPlaying = true;
+          statusEl.textContent = `Playing from ${pauseTime.toFixed(2)}s`;
+        }
+      }
+
+      function pause() {
+        if (isPlaying) {
+          pauseTime = player.now() - starttime; // get how long it's been playing
+          player.stop(); // stop, but keep track of pauseTime
+          isPlaying = false;
+          statusEl.textContent = `Paused at ${pauseTime.toFixed(2)}s`;
+        }
+      }
+
+      function stop() {
+        if (isLoaded) {
+          player.stop();
+          pauseTime = 0;
+          isPlaying = false;
+          statusEl.textContent = "Stopped";
+        }
+      }
+    </script>
+  </body>
+</html>

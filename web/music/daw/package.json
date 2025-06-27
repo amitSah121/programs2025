@@ -1,0 +1,16 @@
+{
+  "name": "daw",
+  "version": "1.0.0",
+  "description": "Digital Audio Workstation",
+  "license": "MIT",
+  "author": "Amit Kumar Sah",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}

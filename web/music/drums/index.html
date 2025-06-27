@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mini Web Synth</title>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+</head>
+<body>
+
+  
+  <div class="w3-content" style="max-width:800px">
+    <h1 class="w3-red w3-center">🎛️ Mini Web Synth</h1>
+    <div class="w3-container">
+      <div class="w3-bar w3-border-blue" id="btns">
+        <span class="w3-bar-item w3-black w3-hover-grey">Kick 1</span>
+        <span class="w3-bar-item w3-black w3-hover-grey">Kick 2</span>
+        <span class="w3-bar-item w3-black w3-hover-grey">Snare</span>
+        <span class="w3-bar-item w3-black w3-hover-grey">Maracas</span>
+      </div>
+    </div>
+    
+    <div class="w3-container w3-margin-top">
+      <div class="w3-bar" id="kick1">
+        <span class="w3-bar-item w3-black w3-hover-grey" style="width:100px">Kick 1</span>
+      </div>
+      <div class="w3-bar" id="kick2">
+        <span class="w3-bar-item w3-black w3-hover-grey" style="width:100px">Kick 2</span>
+      </div>
+      <div class="w3-bar" id="snare">
+        <span class="w3-bar-item w3-black w3-hover-grey" style="width:100px">Snare</span>
+      </div>
+      <div class="w3-bar" id="maracas">
+        <span class="w3-bar-item w3-black w3-hover-grey" style="width:100px">Maracas</span>
+      </div>
+      <div class="w3-bar" id="tom1">
+        <span class="w3-bar-item w3-black w3-hover-grey" style="width:100px">Tom1</span>
+      </div>
+      <div class="w3-bar" id="rimshot">
+        <span class="w3-bar-item w3-black w3-hover-grey" style="width:100px">Rimshot</span>
+      </div>
+      <div class="w3-bar" id="open_hh">
+        <span class="w3-bar-item w3-black w3-hover-grey" style="width:100px">Open_hh</span>
+      </div>
+      <div class="w3-bar" id="hightom">
+        <span class="w3-bar-item w3-black w3-hover-grey" style="width:100px">Hightom</span>
+      </div>
+      <div class="w3-bar" id="hi_conga">
+        <span class="w3-bar-item w3-black w3-hover-grey" style="width:100px">Hi_conga</span>
+      </div>
+      <div class="w3-bar" id="handclap">
+        <span class="w3-bar-item w3-black w3-hover-grey" style="width:100px">Handclap</span>
+      </div>
+      <div class="w3-bar" id="crashcym">
+        <span class="w3-bar-item w3-black w3-hover-grey" style="width:100px">Crashcym</span>
+      </div>
+      <div class="w3-bar" id="cowbell">
+        <span class="w3-bar-item w3-black w3-hover-grey" style="width:100px">Cowbell</span>
+      </div>
+      <div class="w3-bar" id="conga1">
+        <span class="w3-bar-item w3-black w3-hover-grey" style="width:100px">Conga1</span>
+      </div>
+      <div class="w3-bar" id="claves">
+        <span class="w3-bar-item w3-black w3-hover-grey" style="width:100px">Claves</span>
+      </div>
+      <div class="w3-bar" id="cl_hihat">
+        <span class="w3-bar-item w3-black w3-hover-grey" style="width:100px">Cl_hihat</span>
+      </div>
+      <div class="w3-margin"><button id="play" class="w3-btn w3-border-black w3-border">Play</button></div>
+      <div class="w3-margin"><label>bpm </label><input id="bpm" class="w3- w3-border-black w3-border" type="number" placeholder="120"/></div>
+    </div>
+  </div>
+  
+  <script src="index.js"></script>
+</body>
+</html>

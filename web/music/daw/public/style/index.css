@@ -1,0 +1,97 @@
+.ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.ul li {
+  display: block;
+}
+
+.ul li span {
+  padding: 8px 16px;
+}
+
+.ul li li {
+  padding-left: 16px;
+  display: block;
+}
+
+.my-num-options {
+  cursor: ns-resize;
+  user-select: none;
+}
+.my-enum-options {
+  cursor: pointer;
+  user-select: none;
+}
+
+#noteMatrixGrid {
+  display: grid;
+  grid-template-rows: repeat(5, 40px);
+  grid-template-columns: repeat(16, 1fr);
+  border: 1px solid #ccc;
+  position: relative;
+  height: 300px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.grid-cell {
+  border: 1px solid #eee;
+  position: relative;
+}
+
+.note-block {
+  position: absolute;
+  background-color: #6c9fff;
+  border-radius: 4px;
+  z-index: 5;
+  cursor: pointer;
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-end;
+}
+
+.note-block .start-handle {
+  width: 6px;
+  height: 100%;
+  background: darkblue;
+  position: absolute;
+  left: 0;
+  top: 0;
+  cursor: ew-resize;
+}
+
+.note-block .overflow-pointer {
+  position: absolute;
+  top: 50%;
+  right: -8px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid red;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  display: none;
+}
+
+.grid-cell:hover {
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+.note-block {
+  position: absolute;
+  background: #6cf;
+  border: 1px solid #039;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.note-block .note-label {
+  z-index: 10;
+}
+
+.selected-component {
+  border: 2px solid blueviolet;
+}
