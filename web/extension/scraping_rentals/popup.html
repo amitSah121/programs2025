@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Property Scraper</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 10px;
+        width: 300px;
+      }
+      button {
+        padding: 6px 10px;
+        margin: 5px 0;
+      }
+      p,
+      ul {
+        font-size: 14px;
+        white-space: pre-wrap;
+      }
+      ul {
+        max-height: 300px;
+        overflow-y: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Property Scraper</h2>
+    <button id="start">Start</button>
+    <button id="stop">Stop</button>
+    <button id="downloadBtn">Download</button>
+    <p id="status">Not started.</p>
+    <ul id="results"></ul>
+    <script src="popup.js"></script>
+  </body>
+</html>

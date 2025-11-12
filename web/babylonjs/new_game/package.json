@@ -1,0 +1,16 @@
+{
+  "name": "note_editor",
+  "version": "1.0.0",
+  "description": "Its a note editing app with feature to be able to write notes , arrange it just like book pages, and so on ",
+  "license": "MIT",
+  "author": "Amit Kumar Sah",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "main": "node index.js game_1 4500",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}

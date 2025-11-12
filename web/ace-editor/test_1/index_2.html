@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>ACE Test 1</title>
+<style type="text/css" media="screen">
+    #editor { 
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+</style>
+</head>
+<body>
+
+	<button onclick="openFile()">Open</button>
+	<button onclick="saveFile()">Save</button>
+	<button onclick="openProjectFolder()">Open</button>
+	<br/><br/><br/><br/>
+	<div id="editor">function foo(items) {
+	    var x = "All this is syntax highlighted";
+	    return x;
+	}</div>
+	
+	<script src="../src-min/ace.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		var editor = ace.edit("editor");
+	    editor.setTheme("ace/theme/chrome");
+	    editor.session.setMode("ace/mode/javascript");
+
+	    let currentFileHandle = null;
+	    
+	    async function openFile() {
+	        [currentFileHandle] = await window.showOpenFilePicker();
+	        const file = await currentFileHandle.getFile();
+	        const text = await file.text();
+	        editor.setValue(text, -1);
+	    }
+
+	    
+	    
+	    async function saveFile() {
+	        if (!currentFileHandle) {
+	            // First time, show Save dialog
+	            currentFileHandle = await window.showSaveFilePicker({
+	                suggestedName: 'mycode.js',
+	                types: [{ description: 'JavaScript Files', accept: {'text/javascript': ['.js']} }]
+	            });
+	        }
+	        const writable = await currentFileHandle.createWritable();
+	        await writable.write(editor.getValue());
+	        await writable.close();
+	    }
+
+	    let currentProjectFolder = null;
+	    
+	    async function openProjectFolder() {
+	        currentProjectFolder = await window.showDirectoryPicker();
+	        console.log('Project folder opened:', currentProjectFolder.name);
+	    
+	        const projectTree = await readDirectoryRecursive(currentProjectFolder);
+	        console.log('Project Tree:', projectTree);
+	    
+	        return projectTree;
+	    }
+	    
+	    // Recursively walk directory
+	    async function readDirectoryRecursive(dirHandle) {
+	        const tree = {
+	            name: dirHandle.name,
+	            kind: 'directory',
+	            children: []
+	        };
+	    
+	        for await (const entry of dirHandle.values()) {
+	            if (entry.kind === 'file') {
+	                tree.children.push({
+	                    name: entry.name,
+	                    kind: 'file',
+	                    handle: entry
+	                });
+	            } else if (entry.kind === 'directory') {
+	                const subTree = await readDirectoryRecursive(entry);
+	                tree.children.push(subTree);
+	            }
+	        }
+	        return tree;
+	    }
+
+	    async function openFileFromProject(filename) {
+	        if (!currentProjectFolder) return;
+	        const fileHandle = await currentProjectFolder.getFileHandle(filename);
+	        const file = await fileHandle.getFile();
+	        const text = await file.text();
+	        editor.setValue(text, -1); // load into Ace
+	        currentFileHandle = fileHandle; // keep handle for repeated saves
+	    }
+
+	    function renderProjectTree(tree) {
+	        if (!tree) return "";
+	    
+	        // Helper recursive renderer
+	        function renderNode(node) {
+	            if (node.kind === "file") {
+	                return `<li class="file-item" title="${node.name}">📄 ${node.name}</li>`;
+	            } else if (node.kind === "directory") {
+	                let childrenHTML = node.children.map(renderNode).join("");
+	                return `
+	                    <li>
+	                        <details>
+	                            <summary>📂 ${node.name}</summary>
+	                            <ul class="w3-ul w3-white">
+	                                ${childrenHTML}
+	                            </ul>
+	                        </details>
+	                    </li>
+	                `;
+	            }
+	        }
+	    
+	        return `
+	            <div>
+	                <ul class="w3-ul w3-white">
+	                    ${renderNode(tree)}
+	                </ul>
+	            </div>
+	        `;
+	    }
+	    
+	    async function createFolder(path, parentHandle = currentProjectFolder) {
+	        if (!parentHandle) {
+	            console.error("No project folder selected!");
+	            return null;
+	        }
+	    
+	        try {
+	            const parts = path.split("/").filter(Boolean); // split & remove empty parts
+	            let current = parentHandle;
+	    
+	            for (const part of parts) {
+	                current = await current.getDirectoryHandle(part, { create: true });
+	            }
+	    
+	            console.log("Folder created:", path);
+	            return current; // handle of the deepest folder
+	        } catch (err) {
+	            console.error("Error creating folder:", err);
+	            return null;
+	        }
+	    }
+	    
+	    
+	</script>
+</body>
+</html>

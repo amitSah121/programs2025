@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Property Scraper",
+  "version": "1.0",
+  "permissions": ["storage", "activeTab", "scripting","downloads"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Property Scraper"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.realestate.com.au/international/*/rent","https://www.realestate.com.au/international/*/rent/*"],
+      "js": ["content.js"]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+I have a python formatted document.
+		It should be indented.
+							{
+				 if(nothing)
+				 return this;
+							}
+							he
+					 hello();
+					 nothing
+				 not a thing
+					 open ls
+				var aname = 5;
+
+					aname = 6;
+
+			function hello(){
+							e
+							}
+I should have done tffhis fairly a while ago but I guess I was busy enough that I didn;t realise what I was doing back ast that time 
+
+			function fello(){
+
+							}
+
+					 hello();
+			function gello(){
+
+							}

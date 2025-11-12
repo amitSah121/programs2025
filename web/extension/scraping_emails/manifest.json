@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Emails Scrapper",
+  "version": "1.0",
+  "permissions": ["storage", "activeTab", "scripting","downloads"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Property Scraper"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.southampton.ac.uk/people?search_api_fulltext=&search_api_school=School%20of%20Electronics%20and%20Computer%20Science"],
+      "js": ["content.js"]
+    }
+  ]
+}

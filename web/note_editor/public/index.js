@@ -542,7 +542,7 @@ async function saveCurrentFile() {
   });
 
   const result = await res.json();
-  // alert("✅ File saved!");
+  alert("✅ File saved!");
   console.log(result);
 }
 
@@ -605,6 +605,7 @@ document.addEventListener("keydown", (e) => {
       1: "++p\n\n--p",
       2: "++list\n\n--list",
       3: "++table\n\n--table",
+      4: "++div\n\n--div",
     };
 
     if (templateMap[e.key]) {
