@@ -1,1 +1,1 @@
-nohup: failed to run command 'node': No such file or directory
+Server is running at http://localhost:3102/public/index.html
